@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FitMate adaptive icon foreground — dumbbell shape.
+  108dp canvas. Safe zone = centre 72dp (18dp inset each side).
+
+  Dumbbell scaled to ≈82% so all corners land ~30dp from centre (54,54),
+  well inside the inscribed circle (r=36dp) used by circle-clip launchers.
+
+  Total dumbbell: x=27–81 (54dp wide), y=41–67 (26dp tall).
+  Safe-zone margin: 9dp left/right, 23dp top/bottom.
+
+  Colour #D3EDD0 (light green) on the #1B3320 (dark green) background
+  supplied by @color/ic_launcher_background.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Left weight plate  x=27 y=41 w=9 h=26 rx=3.5 -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M30.5,41 L32.5,41 A3.5,3.5,0,0,1,36,44.5 L36,63.5 A3.5,3.5,0,0,1,32.5,67 L30.5,67 A3.5,3.5,0,0,1,27,63.5 L27,44.5 A3.5,3.5,0,0,1,30.5,41 Z" />
+
+    <!-- Left collar  x=36 y=47.5 w=5 h=13 rx=2.5  (vertical pill) -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M38.5,47.5 A2.5,2.5,0,0,1,41,50 L41,58 A2.5,2.5,0,0,1,38.5,60.5 A2.5,2.5,0,0,1,36,58 L36,50 A2.5,2.5,0,0,1,38.5,47.5 Z" />
+
+    <!-- Bar  x=41 y=51.5 w=26 h=5 rx=2.5  (horizontal pill) -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M43.5,51.5 L64.5,51.5 A2.5,2.5,0,0,1,67,54 A2.5,2.5,0,0,1,64.5,56.5 L43.5,56.5 A2.5,2.5,0,0,1,41,54 A2.5,2.5,0,0,1,43.5,51.5 Z" />
+
+    <!-- Right collar  x=67 y=47.5 w=5 h=13 rx=2.5 -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M69.5,47.5 A2.5,2.5,0,0,1,72,50 L72,58 A2.5,2.5,0,0,1,69.5,60.5 A2.5,2.5,0,0,1,67,58 L67,50 A2.5,2.5,0,0,1,69.5,47.5 Z" />
+
+    <!-- Right weight plate  x=72 y=41 w=9 h=26 rx=3.5 -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M75.5,41 L77.5,41 A3.5,3.5,0,0,1,81,44.5 L81,63.5 A3.5,3.5,0,0,1,77.5,67 L75.5,67 A3.5,3.5,0,0,1,72,63.5 L72,44.5 A3.5,3.5,0,0,1,75.5,41 Z" />
+
+</vector>

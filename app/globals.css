@@ -1,26 +1,252 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #EDF5EA;
+  --surface: #FFFFFF;
+  --surface-2: #F4FAF1;
+  --surface-3: #E8F3E4;
+  --primary: #1B3320;
+  --accent: #5AAD50;
+  --accent-light: #D3EDD0;
+  --accent-dark: #2E5E28;
+  --text-1: #111B11;
+  --text-2: #4A5D4A;
+  --text-3: #8FA08F;
+  --border: #D9EDD4;
+  --border-2: #EBF5E8;
+  --orange: #F5813E;
+  --orange-light: #FEE8D8;
+  --teal: #3BB5A3;
+  --teal-light: #D1F0EB;
+  --red: #E86B5A;
+  --red-light: #FDE8E5;
+  --blue: #4F9FDB;
+  --blue-light: #DCF0FC;
+  --yellow: #F5C842;
+  --yellow-light: #FEF5D1;
+  --success: #47A843;
+  --danger: #E85555;
+  --shadow-sm: 0 1px 4px rgba(27,51,32,0.07), 0 0 1px rgba(27,51,32,0.04);
+  --shadow-md: 0 4px 16px rgba(27,51,32,0.1), 0 1px 3px rgba(27,51,32,0.06);
+  --shadow-lg: 0 8px 32px rgba(27,51,32,0.12), 0 2px 8px rgba(27,51,32,0.06);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+button, a, [role="button"] {
+  touch-action: manipulation;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html, body {
+  /* Dark splash colour as the very first paint — eliminates the light-green
+     flash that appears before JS loads and the splash screen renders.
+     Every page sets its own background on its root div (var(--bg) = #EDF5EA),
+     so this dark colour is never visible once the app content is shown.  */
+  background: #0B1A0B;
+  color: var(--text-1);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Inter', sans-serif;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 0; height: 0; }
+
+.card {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-2);
+}
+
+.card-flat {
+  background: var(--surface-2);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+  user-select: none;
+  min-height: 40px;
+}
+
+.chip-on {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.progress-track {
+  background: var(--surface-3);
+  border-radius: 100px;
+  overflow: hidden;
+  height: 6px;
+}
+
+.progress-fill {
+  background: var(--accent);
+  border-radius: 100px;
+  height: 100%;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 15px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.01em;
+}
+
+.btn-ghost {
+  background: var(--surface-2);
+  color: var(--text-2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 10px;
+}
+
+.sheet-overlay {
+  background: rgba(10, 24, 10, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.tab-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+.scroll-touch {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.scroll-touch::-webkit-scrollbar { display: none; }
+
+/* Hide number input spinners cross-browser */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type='number'] { -moz-appearance: textfield; appearance: textfield; }
+
+/* Keyboard focus ring — only visible when navigating with keyboard, not mouse/touch */
+:focus-visible {
+  outline: 2.5px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+input, textarea {
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  color: var(--text-1);
+  font-size: 16px;
+  padding: 13px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(90,173,80,0.15);
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.3s ease-out forwards; }
+
+/* Checklist item entry — CSS not Framer Motion (no JS animation thread cost) */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Perfect Day pulsing dot — CSS only, no JS animation loop */
+@keyframes pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.6; }
+  50%       { transform: scale(1.35); opacity: 1;   }
+}
+
+/* splashDot keyframe removed — dots now use Framer Motion with per-dot
+   delay so they start at opacity:0 and never appear mid-cycle (the CSS
+   approach caused a "jerk" because the animation ran for ~0.9 s before
+   the parent became visible, making the dots pop in mid-pulse). */
+
+/* ── Android WebView rendering hints ─────────────────────────────────────── */
+/* Force GPU layer on card/chip elements — prevents per-card repaint bubbling. */
+/* NOTE: willChange is intentionally NOT applied here (or in JS). It was the   */
+/* root cause of the "TabBar background disappears" bug. translateZ(0) provides */
+/* a lightweight GPU hint without triggering a new stacking context.            */
+.card, .chip {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Smooth hardware-accelerated scrolling on all scroll containers */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Time input styling (notification time pickers) ─────────────────────── */
+/* Remove the ugly default chrome time picker icon on Android WebView */
+input[type='time']::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+  filter: invert(0.3) sepia(1) saturate(3) hue-rotate(90deg);
+  cursor: pointer;
+}
+
+/* ── Button base reset ────────────────────────────────────────────────────── */
+button {
+  -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
+}
+
+/* ── Framer Motion layout animations — prevent scroll-jump on Android ─────── */
+/* When Framer Motion measures elements for layout animations, it briefly      */
+/* sets overflow:hidden on the body, which on Android causes a visible scroll  */
+/* position jump. This prevents that. */
+html {
+  overflow-x: hidden;
 }

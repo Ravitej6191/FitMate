@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FitMate adaptive icon foreground — dumbbell shape.
+
+  108dp canvas = Android adaptive icon full size.
+  Safe zone = centre 72dp (18dp inset on every side).
+
+  Original pieces (24×24 viewBox):
+    Left plate:   rect x=1  y=7   w=4  h=10 rx=1.5
+    Left collar:  rect x=5  y=9.5 w=2  h=5  rx=1
+    Bar:          rect x=7  y=11  w=10 h=2  rx=1
+    Right collar: rect x=17 y=9.5 w=2  h=5  rx=1
+    Right plate:  rect x=19 y=7   w=4  h=10 rx=1.5
+
+  Scaled to fit safely within the inscribed circle (r=36dp from centre 54,54):
+    Scale ≈ 0.82 around (54,54), corners land at ~30dp from centre —
+    well inside every launcher clip shape (circle, squircle, rounded-square).
+
+    Left plate:   x=27 y=41  w=9  h=26 rx=3.5  → x=27–36,  y=41–67
+    Left collar:  x=36 y=47.5 w=5 h=13 rx=2.5  → x=36–41,  y=47.5–60.5 (pill)
+    Bar:          x=41 y=51.5 w=26 h=5 rx=2.5  → x=41–67,  y=51.5–56.5 (pill)
+    Right collar: x=67 y=47.5 w=5 h=13 rx=2.5  → x=67–72,  y=47.5–60.5 (pill)
+    Right plate:  x=72 y=41  w=9  h=26 rx=3.5  → x=72–81,  y=41–67
+
+  Total dumbbell: x=27–81 (54dp wide), y=41–67 (26dp tall), centred at (54,54).
+  Safe-zone margin: 9dp left/right, 23dp top/bottom.
+
+  Colour #D3EDD0 (accent-light) on #1B3320 (primary) background.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Left weight plate  x=27 y=41 w=9 h=26 rx=3.5 -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M30.5,41 L32.5,41 A3.5,3.5,0,0,1,36,44.5 L36,63.5 A3.5,3.5,0,0,1,32.5,67 L30.5,67 A3.5,3.5,0,0,1,27,63.5 L27,44.5 A3.5,3.5,0,0,1,30.5,41 Z" />
+
+    <!-- Left collar  x=36 y=47.5 w=5 h=13 rx=2.5  (vertical pill: w=2×rx) -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M38.5,47.5 A2.5,2.5,0,0,1,41,50 L41,58 A2.5,2.5,0,0,1,38.5,60.5 A2.5,2.5,0,0,1,36,58 L36,50 A2.5,2.5,0,0,1,38.5,47.5 Z" />
+
+    <!-- Bar  x=41 y=51.5 w=26 h=5 rx=2.5  (horizontal pill: h=2×rx) -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M43.5,51.5 L64.5,51.5 A2.5,2.5,0,0,1,67,54 A2.5,2.5,0,0,1,64.5,56.5 L43.5,56.5 A2.5,2.5,0,0,1,41,54 A2.5,2.5,0,0,1,43.5,51.5 Z" />
+
+    <!-- Right collar  x=67 y=47.5 w=5 h=13 rx=2.5 -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M69.5,47.5 A2.5,2.5,0,0,1,72,50 L72,58 A2.5,2.5,0,0,1,69.5,60.5 A2.5,2.5,0,0,1,67,58 L67,50 A2.5,2.5,0,0,1,69.5,47.5 Z" />
+
+    <!-- Right weight plate  x=72 y=41 w=9 h=26 rx=3.5 -->
+    <path
+        android:fillColor="#D3EDD0"
+        android:pathData="M75.5,41 L77.5,41 A3.5,3.5,0,0,1,81,44.5 L81,63.5 A3.5,3.5,0,0,1,77.5,67 L75.5,67 A3.5,3.5,0,0,1,72,63.5 L72,44.5 A3.5,3.5,0,0,1,75.5,41 Z" />
+
+</vector>

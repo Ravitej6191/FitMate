@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "689370436935",
+    "project_id": "fit-mate-96a97",
+    "storage_bucket": "fit-mate-96a97.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689370436935:android:3d9f99b044c236bce4e862",
+        "android_client_info": {
+          "package_name": "com.fitmate.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "689370436935-dfcjdnm7l03huung3qmhqk2f4609351e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fitmate.app",
+            "certificate_hash": "502fbbe1609272c491a4385c6c0a7025a250ddf4"
+          }
+        },
+        {
+          "client_id": "689370436935-4cub5f8plqe1q921s6e9b1lotnd3pif3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRgswoKOUZmJzZffUmpOD4OgFYdkZU2qE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "689370436935-4cub5f8plqe1q921s6e9b1lotnd3pif3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <!-- Dark background gradient — matches splash screen -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1A0B"/>
+      <stop offset="100%" stop-color="#1B3320"/>
+    </linearGradient>
+    <!-- Light green logo box gradient — matches splash screen logo mark -->
+    <linearGradient id="logo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D3EDD0"/>
+      <stop offset="100%" stop-color="#B8E0B4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+
+  <!-- Logo mark box (centered, 22×22, same radius as splash) -->
+  <rect x="5" y="5" width="22" height="22" rx="5.5" fill="url(#logo)"/>
+
+  <!--
+    Dumbbell — fill-based (no stroke) for crisp rendering at small sizes.
+    Original coordinates are 24×24 viewBox. Dumbbell spans x:1–23, y:7–17.
+    Center of dumbbell = (12, 12).
+    Target center on 32×32 canvas = (16, 16).
+    Scale = 0.727 so dumbbell fits inside logo box with 3px padding.
+    translate(7.3, 7.3) scale(0.727) puts center at (12·0.727+7.3, 12·0.727+7.3) = (16, 16) ✓
+  -->
+  <g transform="translate(7.3 7.3) scale(0.727)">
+    <!-- Left weight plate -->
+    <rect x="1"  y="7"   width="4" height="10" rx="1.5" fill="#1B3320"/>
+    <!-- Left collar -->
+    <rect x="5"  y="9.5" width="2" height="5"  rx="1"   fill="#1B3320"/>
+    <!-- Bar -->
+    <rect x="7"  y="11"  width="10" height="2" rx="1"   fill="#1B3320"/>
+    <!-- Right collar -->
+    <rect x="17" y="9.5" width="2" height="5"  rx="1"   fill="#1B3320"/>
+    <!-- Right weight plate -->
+    <rect x="19" y="7"   width="4" height="10" rx="1.5" fill="#1B3320"/>
+  </g>
+</svg>

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { TabBar } from './TabBar';
 import { SplashScreen } from './SplashScreen';
-import { useStore } from '@/lib/store';
+import { useStore, flushPersist } from '@/lib/store';
 import { usePathname, useRouter } from 'next/navigation';
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
@@ -10,6 +10,7 @@ import {
   requestNotificationPermission,
   scheduleAllNotifications,
 } from '@/lib/notifications';
+import { WidgetPlugin } from '@/lib/widget';
 import { trySilentGoogleRestore } from '@/lib/auth';
 import type { ChecklistKey } from '@/lib/constants';
 
@@ -57,6 +58,21 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
     } catch { /* ignore */ }
   }, [mounted, isOnboarding, router]);
 
+  // ── Flush pending saves when the app is backgrounded / closed ──────────────
+  useEffect(() => {
+    const onHide = () => { if (document.visibilityState === 'hidden') flushPersist(); };
+    document.addEventListener('visibilitychange', onHide);
+    window.addEventListener('pagehide', flushPersist);
+    const sub = Capacitor.isNativePlatform()
+      ? App.addListener('pause', flushPersist)
+      : null;
+    return () => {
+      document.removeEventListener('visibilitychange', onHide);
+      window.removeEventListener('pagehide', flushPersist);
+      sub?.then(h => h.remove()).catch(() => {});
+    };
+  }, []);
+
   // ── Silent Google session restore ──────────────────────────────────────────
   useEffect(() => {
     trySilentGoogleRestore().catch(() => {});
@@ -91,17 +107,12 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
     const done = (Object.keys(todayLog.completed) as ChecklistKey[]).filter(k => todayLog.completed[k] && todayLog.planned[k]).length;
     const completionPct = planned > 0 ? Math.round((done / planned) * 100) : 0;
 
-    import('@capacitor/core').then(({ Capacitor: Cap }) => {
-      if (!Cap.isPluginAvailable('WidgetPlugin')) return;
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { Plugins } = require('@capacitor/core') as { Plugins: Record<string, { update?: (args: Record<string, unknown>) => Promise<void> }> };
-      Plugins.WidgetPlugin?.update?.({
-        steps: todayLog.stepCount,
-        stepsGoal: profile2.stepGoal ?? 8000,
-        completionPct,
-        workoutName: todayLog.workoutName,
-      })?.catch(() => {});
-    });
+    WidgetPlugin.update({
+      steps: todayLog.stepCount,
+      stepsGoal: profile2.stepGoal ?? 8000,
+      completionPct,
+      workoutName: todayLog.workoutName,
+    }).catch(() => {});
   }, [logs, profile2.stepGoal]);
 
   // ── Android back button — with exit warning ─────────────────────────────────

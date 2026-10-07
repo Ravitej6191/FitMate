@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "android": "next build && npx cap sync android && npx cap open android"
+    "android": "next build && npx cap sync android && npx cap open android",
+    "lint": "eslint .",
+    "test": "vitest run"
   },
   "dependencies": {
     "@capacitor/android": "^8.2.0",
@@ -27,7 +29,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.1.7",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }

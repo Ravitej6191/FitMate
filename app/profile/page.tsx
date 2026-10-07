@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from '@/lib/store';
 import { BottomSheet } from '@/components/BottomSheet';
+import { BodyCard, FormField } from '@/components/ProfileParts';
 import { calcBMI, today } from '@/lib/utils';
 import { haptic } from '@/lib/utils';
 import { STORAGE_KEY, GOAL_OPTIONS } from '@/lib/constants';
@@ -45,6 +46,8 @@ export default function ProfilePage() {
   const profile       = useStore(s => s.profile);
   const updateProfile = useStore(s => s.updateProfile);
   const resetStore    = useStore(s => s.resetStore);
+  const exportData    = useStore(s => s.exportData);
+  const importData    = useStore(s => s.importData);
   const logs          = useStore(s => s.logs);
   const template      = useStore(s => s.template);
   const goals         = useStore(s => s.goals);
@@ -131,7 +134,7 @@ export default function ProfilePage() {
   // ── Backup ──────────────────────────────────────────────────────────────────
   const handleBackup = async () => {
     haptic('light');
-    const data = JSON.stringify({ template, logs, profile, goals, unlockedAchievements });
+    const data = exportData();
     try {
       if (navigator.share) {
         await navigator.share({ title: 'FitMate Backup', text: data });
@@ -145,28 +148,12 @@ export default function ProfilePage() {
   // ── Restore ─────────────────────────────────────────────────────────────────
   const handleRestore = () => {
     setRestoreError('');
-    try {
-      const parsed = JSON.parse(restoreText);
-      if (!parsed.logs || !parsed.template || !parsed.profile) {
-        setRestoreError('Invalid backup file — missing required fields.');
-        return;
-      }
-      // Restore by updating store fields via updateProfile + direct store usage
-      updateProfile({ ...parsed.profile });
-      // We can only update profile via store; full restore needs resetStore + rebuild
-      // For a proper restore, we write to localStorage and reload
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        template: parsed.template,
-        logs: parsed.logs,
-        profile: parsed.profile,
-        goals: parsed.goals ?? [],
-        unlockedAchievements: parsed.unlockedAchievements ?? [],
-      }));
-      setRestoreOpen(false);
-      window.location.reload();
-    } catch {
-      setRestoreError('Could not parse JSON. Please paste valid backup data.');
+    if (!importData(restoreText)) {
+      setRestoreError('Invalid backup — paste the full JSON produced by "Backup Data".');
+      return;
     }
+    setRestoreText('');
+    setRestoreOpen(false);
   };
 
   // ── Google Sign-Out (keeps local data, clears Google session) ────────────────
@@ -694,35 +681,6 @@ export default function ProfilePage() {
           </div>
         </div>
       </BottomSheet>
-    </div>
-  );
-}
-
-// ─── Sub-components ────────────────────────────────────────────────────────────
-
-function BodyCard({ Icon, value, unit, label, color, bg }: {
-  Icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
-  value: string; unit: string; label: string; color: string; bg: string;
-}) {
-  return (
-    <div style={{ background: bg, borderRadius: 18, padding: '14px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, border: `1px solid ${color}33` }}>
-      <Icon size={18} color={color} strokeWidth={1.8} />
-      <div style={{ textAlign: 'center' }}>
-        <p style={{ fontSize: 20, fontWeight: 900, color, lineHeight: 1 }}>{value}</p>
-        {unit && <p style={{ fontSize: 10, color, fontWeight: 600, opacity: 0.7 }}>{unit}</p>}
-      </div>
-      <p style={{ fontSize: 10, color: '#8FA08F', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</p>
-    </div>
-  );
-}
-
-function FormField({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: 14 }}>
-      <p style={{ fontSize: 11, fontWeight: 700, color: '#8FA08F', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>
-        {label}
-      </p>
-      {children}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { registerPlugin } from '@capacitor/core';
 // ─── Plugin Interface ─────────────────────────────────────────────────────────
 
 interface StepCounterPlugin {
-  getStepCount(): Promise<{ steps: number; supported: boolean }>;
+  getStepCount(): Promise<{ steps: number; supported: boolean; baseline?: number; baselineDate?: string }>;
 }
 
 /**
@@ -57,11 +57,11 @@ export type StepResult = {
  *  - Today's steps = currentSensorValue − baseline.
  *
  * First open of a new day  → reset baseline, return 0.
- * Device reboot mid-day    → sensor drops below baseline → Math.max(0, …) = 0.
+ * Device reboot mid-day    → sensor drops below baseline → steps since boot are counted.
  */
 export async function getTodaySteps(): Promise<StepResult> {
   try {
-    const { steps: sensorValue, supported } = await StepCounter.getStepCount();
+    const { steps: sensorValue, supported, baseline, baselineDate } = await StepCounter.getStepCount();
 
     if (!supported) return { steps: 0, supported: false };
     if (sensorValue === 0) return { steps: 0, supported: true };
@@ -71,17 +71,27 @@ export async function getTodaySteps(): Promise<StepResult> {
     // before 5:30 AM, which would store the wrong baseline for the whole day.
     const _d = new Date();
     const todayStr = `${_d.getFullYear()}-${String(_d.getMonth() + 1).padStart(2, '0')}-${String(_d.getDate()).padStart(2, '0')}`;
+    // Preferred: baseline captured natively just after midnight (correct even if the
+    // app wasn't opened until later in the day). A sensor reading below it means the
+    // device rebooted since, so the counter restarted from 0.
+    if (baselineDate === todayStr && typeof baseline === 'number') {
+      return { steps: sensorValue >= baseline ? sensorValue - baseline : sensorValue, supported: true };
+    }
+
+    // Fallback (first install day, or no snapshot yet): baseline = first reading of the day.
     const saved = readBaseline();
 
     if (!saved || saved.date !== todayStr) {
-      // New day (or first install) — store current reading as today's baseline
       writeBaseline(todayStr, sensorValue);
       return { steps: 0, supported: true };
     }
 
-    // Normal case: subtract midnight baseline
-    const todaySteps = Math.max(0, sensorValue - saved.value);
-    return { steps: todaySteps, supported: true };
+    // Counter went backwards → device rebooted; everything since boot is today's.
+    if (sensorValue < saved.value) {
+      writeBaseline(todayStr, 0);
+      return { steps: sensorValue, supported: true };
+    }
+    return { steps: sensorValue - saved.value, supported: true };
 
   } catch {
     return { steps: 0, supported: false };

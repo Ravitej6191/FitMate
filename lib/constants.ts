@@ -31,6 +31,9 @@ export const WORKOUT_PRESETS = [
 
 export const STORAGE_KEY = 'fitmate_v3';
 
+/** Max daily logs kept in storage (~5 years). Older entries are dropped. */
+export const MAX_LOGS = 1900;
+
 // ─── Achievement definitions ──────────────────────────────────────────────────
 export type Achievement = {
   id: string; title: string; desc: string;

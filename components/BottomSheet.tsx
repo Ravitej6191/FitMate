@@ -12,7 +12,7 @@ interface BottomSheetProps {
 export function BottomSheet({ open, onClose, title, children }: BottomSheetProps) {
   // Keep a stable ref to onClose so popstate handler always calls latest version
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  useEffect(() => { onCloseRef.current = onClose; });
 
   // Track whether WE triggered history.back() so popstate doesn't double-fire
   const closingRef = useRef(false);

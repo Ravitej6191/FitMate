@@ -35,6 +35,14 @@
                 android:resource="@xml/widget_fitmate_info" />
         </receiver>
 
+        <receiver
+            android:name=".StepSnapshotReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -57,7 +65,9 @@
 
     <!-- Push / local notifications (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Schedule exact alarms (needed by Capacitor Local Notifications on Android 12+) -->
+    <!-- Re-arm the midnight step snapshot after reboot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Needed by Capacitor Local Notifications on Android 12+ (user-grantable; USE_EXACT_ALARM
+         is intentionally omitted — Play Store restricts it to alarm/calendar apps) -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 </manifest>

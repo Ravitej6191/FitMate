@@ -42,6 +42,11 @@ import com.getcapacitor.annotation.PermissionCallback;
 )
 public class StepCounterPlugin extends Plugin {
 
+    @Override
+    public void load() {
+        StepSnapshotReceiver.schedule(getContext());
+    }
+
     // The pending call when we need to ask for permission before we can read the sensor
     private PluginCall pendingPermissionCall;
 
@@ -134,6 +139,14 @@ public class StepCounterPlugin extends Plugin {
         JSObject result = new JSObject();
         result.put("steps", steps);
         result.put("supported", supported);
+        // Midnight snapshot taken natively (may be absent on first install / after reboot)
+        android.content.SharedPreferences sp = getContext()
+                .getSharedPreferences(StepSnapshotReceiver.PREFS, Context.MODE_PRIVATE);
+        String date = sp.getString(StepSnapshotReceiver.KEY_DATE, null);
+        if (date != null) {
+            result.put("baselineDate", date);
+            result.put("baseline", sp.getLong(StepSnapshotReceiver.KEY_VALUE, 0));
+        }
         call.resolve(result);
     }
 }

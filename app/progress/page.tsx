@@ -1,6 +1,6 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useStore } from '@/lib/store';
 import { ProgressRing } from '@/components/ProgressRing';
 import {
@@ -46,18 +46,18 @@ export default function ProgressPage() {
   const weekPct       = avgCompletion(weekLogs);
 
   // ── Streak (shared util — same logic as Header) ───────────────────────────
-  const streak = useMemo(() => calcStreak(logs, todayStr), [logs, todayStr]);
+  const streak = calcStreak(logs, todayStr);
 
   // ── Selected-month data ───────────────────────────────────────────────────
-  const monthDatesArr = useMemo(() => monthDates(viewYear, viewMonth), [viewYear, viewMonth]);
+  const monthDatesArr = monthDates(viewYear, viewMonth);
   const firstDayDow   = dayOfWeekFromDate(`${viewYear}-${String(viewMonth).padStart(2, '0')}-01`);
-  const monthLogsMap  = useMemo(() => {
+  const monthLogsMap = (() => {
     const map = new Map<string, typeof logs[0]>();
     logs.forEach(l => map.set(l.date, l));
     return map;
-  }, [logs]);
+  })();
 
-  const monthStats = useMemo(() => {
+  const monthStats = (() => {
     const pastDates    = monthDatesArr.filter(d => d <= todayStr);
     const pastLogs     = pastDates.map(d => monthLogsMap.get(d)).filter(Boolean) as typeof logs;
     const trackedDays  = pastLogs.length;
@@ -67,7 +67,7 @@ export default function ProgressPage() {
     // total water logged this month (litres)
     const totalWater   = +pastLogs.reduce((sum, l) => sum + (l.waterIntake ?? 0), 0).toFixed(1);
     return { trackedDays, perfectDays, avgPct, workoutDays, totalWater };
-  }, [monthDatesArr, monthLogsMap, todayStr]);
+  })();
 
   const ringColor = weekPct >= 80 ? '#5AAD50' : weekPct >= 50 ? '#3BB5A3' : '#E86B5A';
 

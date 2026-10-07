@@ -1,6 +1,6 @@
 'use client';
 import { create } from 'zustand';
-import { CHECKLIST_KEYS, ChecklistKey, STORAGE_KEY } from './constants';
+import { CHECKLIST_KEYS, ChecklistKey, STORAGE_KEY, MAX_LOGS } from './constants';
 import { today, dayOfWeekFromDate, calcStreak, calcCompletion } from './utils';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -89,6 +89,10 @@ export type AppState = {
   ensureLog: (date: string) => void;
   initStore: () => void;
   resetStore: () => void;
+  /** Replace all data with a backup produced by exportData(). Returns false if invalid. */
+  importData: (raw: string) => boolean;
+  /** Serialise all persisted data as a JSON backup string. */
+  exportData: () => string;
 
   addExercise:      (date: string, entry: ExerciseEntry) => void;
   updateExercise:   (date: string, index: number, entry: ExerciseEntry) => void;
@@ -167,21 +171,38 @@ function makeLog(date: string, tpl: DayTemplate): DayLog {
   };
 }
 
-// Debounced persist — batches rapid updates (e.g. fast water taps) into one write
+// Debounced persist — batches rapid updates (e.g. fast water taps) into one write.
+// The latest pending snapshot is kept so it can be flushed immediately when the
+// app is backgrounded (see flushPersist) instead of being lost to the debounce.
+type Persisted = Pick<AppState, 'template' | 'logs' | 'profile' | 'selectedDate' | 'goals' | 'unlockedAchievements'>;
 let _persistTimer: ReturnType<typeof setTimeout> | null = null;
-function persist(state: Pick<AppState, 'template' | 'logs' | 'profile' | 'selectedDate' | 'goals' | 'unlockedAchievements'>) {
+let _pending: Persisted | null = null;
+
+function writeNow(state: Persisted) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      template: state.template,
+      logs: state.logs.slice(-MAX_LOGS),
+      profile: state.profile,
+      goals: state.goals,
+      unlockedAchievements: state.unlockedAchievements,
+    }));
+  } catch (err) {
+    // Most likely quota exceeded (e.g. large profile photo) — don't fail silently.
+    console.warn('[FitMate] Failed to save data:', err);
+  }
+}
+
+/** Write any pending state right now. Safe to call at any time. */
+export function flushPersist() {
+  if (_persistTimer) { clearTimeout(_persistTimer); _persistTimer = null; }
+  if (_pending) { const s = _pending; _pending = null; writeNow(s); }
+}
+
+function persist(state: Persisted) {
+  _pending = state;
   if (_persistTimer) clearTimeout(_persistTimer);
-  _persistTimer = setTimeout(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        template: state.template,
-        logs: state.logs.slice(-200), // ~6 months
-        profile: state.profile,
-        goals: state.goals,
-        unlockedAchievements: state.unlockedAchievements,
-      }));
-    } catch { /* ignore */ }
-  }, 250);
+  _persistTimer = setTimeout(flushPersist, 250);
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────
@@ -603,9 +624,31 @@ export const useStore = create<AppState>((set, get) => ({
     });
   },
 
+  exportData: () => {
+    const { template, logs, profile, goals, unlockedAchievements } = get();
+    return JSON.stringify({ app: 'fitmate', version: 1, exportedAt: new Date().toISOString(), template, logs, profile, goals, unlockedAchievements });
+  },
+
+  importData: (raw) => {
+    try {
+      const saved = JSON.parse(raw);
+      if (!saved || typeof saved !== 'object' || !Array.isArray(saved.template) || !Array.isArray(saved.logs) || typeof saved.profile !== 'object') return false;
+      if (_persistTimer) { clearTimeout(_persistTimer); _persistTimer = null; }
+      _pending = null;
+      const { app: _a, version: _v, exportedAt: _e, ...data } = saved;
+      void _a; void _v; void _e;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      get().initStore(); // runs the same migrations as a normal load
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
   // ── Hard reset: wipe localStorage AND in-memory state back to defaults ──
   resetStore: () => {
     if (_persistTimer) { clearTimeout(_persistTimer); _persistTimer = null; }
+    _pending = null;
     try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
 
     const template     = defaultTemplate();

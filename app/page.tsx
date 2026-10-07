@@ -60,7 +60,6 @@ export default function HomePage() {
 
   // Steps
   const stepCount    = logs.find(l => l.date === todayStr)?.stepCount ?? 0;
-  const stepGoal     = profile.stepGoal ?? 8000;
   const [stepSupported, setStepSupported] = useState(true);
   const stepSyncRef  = useRef(false);
 

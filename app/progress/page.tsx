@@ -5,9 +5,8 @@ import { useStore } from '@/lib/store';
 import { ProgressRing } from '@/components/ProgressRing';
 import {
   calcCompletion, avgCompletion, calcStreak, today, weekDates,
-  daysInMonth, dayOfWeekFromDate, insightMessage, dayShort, monthDates,
+  dayOfWeekFromDate, insightMessage, dayShort, monthDates,
 } from '@/lib/utils';
-import { CHECKLIST_KEYS } from '@/lib/constants';
 import { Flame, CalendarCheck, CheckCircle2, ChevronLeft, ChevronRight, Droplets, BarChart3 } from 'lucide-react';
 import { haptic } from '@/lib/utils';
 

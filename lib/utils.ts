@@ -62,11 +62,6 @@ export function dayFull(dateStr: string): string {
   return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][dayOfWeekFromDate(dateStr)];
 }
 
-/** "March 2026" */
-export function monthYearLabel(dateStr: string): string {
-  return parseLocal(dateStr).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-}
-
 /** Days in a given month */
 export function daysInMonth(year: number, month: number): number {
   return new Date(year, month, 0).getDate();
@@ -135,9 +130,6 @@ export function haptic(style: HapticStyle = 'light'): void {
   };
   navigator.vibrate(patterns[style]);
 }
-
-/** @deprecated use haptic() */
-export function vibrate(ms = 8): void { haptic('light'); void ms; }
 
 /**
  * Consecutive days streak — counts days where completion ≥ 50%.

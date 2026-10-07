@@ -4,8 +4,7 @@ import { motion } from 'framer-motion';
 import { useStore } from '@/lib/store';
 import { BottomSheet } from '@/components/BottomSheet';
 import { BodyCard, FormField } from '@/components/ProfileParts';
-import { calcBMI, today } from '@/lib/utils';
-import { haptic } from '@/lib/utils';
+import { calcBMI, haptic } from '@/lib/utils';
 import { STORAGE_KEY, GOAL_OPTIONS } from '@/lib/constants';
 import {
   User, Ruler, Scale, Edit2, Trash2, Activity,
@@ -29,7 +28,6 @@ async function compressImage(file: File): Promise<string> {
       const MAX = 300;
       canvas.width = canvas.height = Math.min(size, MAX);
       const ctx = canvas.getContext('2d')!;
-      const scale = canvas.width / size;
       const sx = (img.width  - size) / 2;
       const sy = (img.height - size) / 2;
       ctx.drawImage(img, sx, sy, size, size, 0, 0, canvas.width, canvas.height);
@@ -49,8 +47,6 @@ export default function ProfilePage() {
   const exportData    = useStore(s => s.exportData);
   const importData    = useStore(s => s.importData);
   const logs          = useStore(s => s.logs);
-  const template      = useStore(s => s.template);
-  const goals         = useStore(s => s.goals);
   const unlockedAchievements = useStore(s => s.unlockedAchievements);
 
   const [editOpen,        setEditOpen]        = useState(false);

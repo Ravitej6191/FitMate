@@ -63,6 +63,7 @@ export default function StepsPage() {
 
   // Build 30-day date range (local calendar dates)
   // todayStr in deps so the range refreshes if the app stays open past midnight
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- todayStr intentionally re-runs the range after midnight
   const dates30 = useMemo(() => lastNDates(30), [todayStr]);
 
   // Map date → steps from store logs

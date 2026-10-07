@@ -97,21 +97,3 @@ export async function getTodaySteps(): Promise<StepResult> {
     return { steps: 0, supported: false };
   }
 }
-
-/**
- * One-time permission request for ACTIVITY_RECOGNITION (Android 10+).
- * The permission is declared in AndroidManifest.xml — this requests it at runtime.
- * Returns true if already granted or just granted.
- */
-export async function requestActivityPermission(): Promise<boolean> {
-  if (typeof window === 'undefined') return false;
-  try {
-    // Capacitor doesn't have a standalone ACTIVITY_RECOGNITION plugin,
-    // but reading the sensor on Android 10+ will prompt the system permission dialog
-    // automatically on first getStepCount() call. So a test-read is enough.
-    const { supported } = await StepCounter.getStepCount();
-    return supported;
-  } catch {
-    return false;
-  }
-}
